@@ -4,6 +4,11 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  systemd.services.fwupd-refresh = {
+    after = [ "polkit.service" ];
+    wants = [ "polkit.service" ];
+  };
+
   services.xserver.xkb = {
     layout = "us";
     variant = "";

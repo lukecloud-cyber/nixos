@@ -21,7 +21,7 @@
         inherit inputs;
       };
       modules = [
-        inputs.ratty.nixosModules.default
+      #  inputs.ratty.nixosModules.default
         inputs.nix-index-database.nixosModules.default
         inputs.nixos-hardware.nixosModules.dell-latitude-7490
         ./configuration.nix
