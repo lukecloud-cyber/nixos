@@ -168,7 +168,7 @@ in
                         },
                         options = {
                           nixos = {
-                            expr = '(builtins.getFlake "/etc/nixos").nixosConfigurations.nixos.options',
+                            expr = '(builtins.getFlake "/etc/nixos").nixosConfigurations.nixospc.options',
                           },
                         },
                       },

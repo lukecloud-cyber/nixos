@@ -20,4 +20,6 @@
       extraArgs = "--keep-since 7d --keep 5";
     };
   };
+
+  programs.nix-ld.enable = true;
 }

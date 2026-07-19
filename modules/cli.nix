@@ -103,5 +103,6 @@
     cowsay
     lolcat
     tmux
+    pciutils
   ];
 }

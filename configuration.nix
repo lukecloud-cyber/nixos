@@ -4,7 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/boot.nix
-    ./modules/storage.nix
+    ./modules/cachyos-kernel.nix
     ./modules/nix.nix
     ./modules/networking.nix
     ./modules/locale.nix
@@ -15,10 +15,16 @@
     ./modules/gaming.nix
     ./modules/fonts.nix
     ./modules/codex.nix
+    ./modules/ida-home-pc.nix
+    ./modules/reversing.nix
     ./modules/lazyvim.nix
+    ./modules/containers.nix
   ];
+   
 
-  networking.hostName = "nixos";
+  nixpkgs.config.allowUnfree = true;
+
+  networking.hostName = "nixospc";
 
   # Keep this at the release version of the first install.
   system.stateVersion = "26.05";
