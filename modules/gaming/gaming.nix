@@ -46,7 +46,6 @@
 
   environment.systemPackages = with pkgs; [
     heroic # Launcher for Epic, GOG, and Amazon game libraries.
-    # moonlight-qt # GameStream client; currently disabled.
     steamtinkerlaunch # Wrapper for configuring tools such as MangoHud and mod managers.
   ];
 }

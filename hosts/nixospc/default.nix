@@ -19,6 +19,7 @@
     ../../modules/office.nix
     ../../modules/gaming/gaming.nix
     ../../modules/gaming/star-citizen.nix
+    ../../modules/gaming/sunshine.nix
     ../../modules/fonts.nix
     ../../modules/codex.nix
     ../../modules/reverse-engineering/ida-home.nix
