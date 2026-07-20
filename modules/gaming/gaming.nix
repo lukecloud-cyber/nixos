@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Load the NT synchronization primitive and tune latency/address-space limits.
@@ -11,15 +11,11 @@
     };
   };
 
-  # Download gaming packages from their project caches when available.
+  # Download gaming packages from their project cache when available.
   nix.settings = {
-    extra-substituters = [
-      "https://nix-gaming.cachix.org"
-      "https://nix-citizen.cachix.org"
-    ];
+    extra-substituters = [ "https://nix-gaming.cachix.org" ];
     extra-trusted-public-keys = [
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
-      "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
     ];
   };
 
@@ -51,10 +47,6 @@
   environment.systemPackages = with pkgs; [
     heroic # Launcher for Epic, GOG, and Amazon game libraries.
     # moonlight-qt # GameStream client; currently disabled.
-    # Star Citizen launcher from nix-citizen with a PulseAudio latency override.
-    (inputs.nix-citizen.packages.${pkgs.stdenv.hostPlatform.system}.rsi-launcher.override {
-        extraEnvVars.PULSE_LATENCY_MSEC = "60";
-      })
     steamtinkerlaunch # Wrapper for configuring tools such as MangoHud and mod managers.
   ];
 }

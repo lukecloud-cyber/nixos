@@ -17,7 +17,8 @@
     ./modules/browsers.nix # Firefox and Brave browsers.
     ./modules/communication.nix # Chat applications.
     ./modules/office.nix # Calculator and office suite.
-    ./modules/gaming.nix # Steam, launchers, and gaming optimizations.
+    ./modules/gaming/gaming.nix # Steam and general gaming optimizations.
+    ./modules/gaming/start-citizen.nix # Star Citizen launcher and cache.
     ./modules/fonts.nix # Text, symbol, and programming fonts.
     ./modules/codex.nix # Codex CLI and its machine-wide policy.
     ./modules/reverse-engineering/ida-home.nix # Locally supplied IDA Home package.
