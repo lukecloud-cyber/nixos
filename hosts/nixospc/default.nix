@@ -1,8 +1,30 @@
+{ inputs, ... }:
+
 {
   imports = [
     ./hardware-configuration.nix
+    inputs.nix-index-database.nixosModules.default
+    ../../modules/boot.nix
     ../../modules/cachyos-kernel.nix
+    ../../modules/nix-workflow.nix
+    ../../modules/local-network.nix
+    ../../modules/remote-access.nix
+    ../../modules/regional-settings.nix
+    ../../modules/plasma-workstation.nix
+    ../../modules/sweet-cicero.nix
+    ../../modules/terminal-workflow.nix
+    ../../modules/development-workflow.nix
+    ../../modules/browsers.nix
+    ../../modules/communication.nix
+    ../../modules/office.nix
+    ../../modules/gaming/gaming.nix
     ../../modules/gaming/start-citizen.nix
+    ../../modules/fonts.nix
+    ../../modules/codex.nix
+    ../../modules/reverse-engineering/ida-home.nix
+    ../../modules/reverse-engineering/tools.nix
+    ../../modules/neovim-lazyvim.nix
+    ../../modules/container-development.nix
   ];
 
   networking.hostName = "nixospc";
@@ -14,4 +36,6 @@
     iptables -w -A nixos-fw -i wlp5s0 -s 192.168.1.0/24 -p tcp -m multiport --dports 47984,47989,47990,48010 -j nixos-fw-accept
     iptables -w -A nixos-fw -i wlp5s0 -s 192.168.1.0/24 -p udp -m multiport --dports 47998,47999,48000,48002,48010 -j nixos-fw-accept
   '';
+
+  system.stateVersion = "26.05";
 }
