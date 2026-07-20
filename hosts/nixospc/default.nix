@@ -1,5 +1,9 @@
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ../../modules/cachyos-kernel.nix
+    ../../modules/gaming/start-citizen.nix
+  ];
 
   networking.hostName = "nixospc";
 
