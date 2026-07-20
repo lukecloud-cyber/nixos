@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 
 let
+  # Wrap the proprietary IDA Home installer as a reproducible local package.
   ida-home-pc = pkgs.callPackage (
     { lib
     , stdenv
@@ -12,34 +13,35 @@ let
     }:
 
     let
+      # Libraries expected by IDA's bundled executables and Qt interface.
       runtimeLibs = with pkgs; [
-        dbus
-        fontconfig
-        freetype
-        glib
-        gtk3
-        libdrm
-        libglvnd
-        libxcrypt-legacy
-        libxkbcommon
-        stdenv.cc.cc.lib
-        wayland
-        xcbutil
-        xcbutilcursor
-        xcbutilimage
-        xcbutilkeysyms
-        xcbutilrenderutil
-        xcbutilwm
-        libice
-        libsm
-        libx11
-        libxext
-        libxi
-        libxrender
-        libxtst
-        libxcb
-        python312
-        zlib
+        dbus # Desktop message bus IPC.
+        fontconfig # Font discovery and matching.
+        freetype # Font rasterization.
+        glib # Core data types and event loops used by GTK.
+        gtk3 # GTK desktop integration libraries.
+        libdrm # Direct Rendering Manager interface.
+        libglvnd # Vendor-neutral OpenGL dispatch library.
+        libxcrypt-legacy # Legacy crypt symbols expected by proprietary binaries.
+        libxkbcommon # Keyboard map handling for X11 and Wayland.
+        stdenv.cc.cc.lib # GCC C++ runtime.
+        wayland # Wayland client runtime.
+        xcbutil # Common XCB convenience helpers.
+        xcbutilcursor # XCB cursor management.
+        xcbutilimage # XCB image conversion helpers.
+        xcbutilkeysyms # XCB keyboard symbol helpers.
+        xcbutilrenderutil # X Render helpers for XCB.
+        xcbutilwm # XCB window-manager helpers.
+        libice # X11 inter-client exchange runtime.
+        libsm # X11 session-management runtime.
+        libx11 # Core X11 client library.
+        libxext # Common X11 protocol extensions.
+        libxi # X11 input extension.
+        libxrender # X11 Render extension.
+        libxtst # X11 input-testing extension.
+        libxcb # Low-level X protocol client library.
+        python312 # Embedded IDAPython runtime.
+        zlib # DEFLATE compression runtime.
       ];
     in
     stdenv.mkDerivation rec {
@@ -57,13 +59,14 @@ let
       };
 
       nativeBuildInputs = [
-        autoPatchelfHook
-        copyDesktopItems
-        makeWrapper
+        autoPatchelfHook # Point installer binaries at Nix store libraries.
+        copyDesktopItems # Install generated desktop entries.
+        makeWrapper # Create the launch wrapper with required environment variables.
       ];
-      buildInputs = runtimeLibs;
-      dontUnpack = true;
+      buildInputs = runtimeLibs; # Make runtime libraries visible to autoPatchelf.
+      dontUnpack = true; # The source is a self-extracting installer, not an archive.
 
+      # Ignore optional Qt backends and compositor libraries not needed here.
       autoPatchelfIgnoreMissingDeps = [
         "libQt6EglFSDeviceIntegration.so.6"
         "libQt6Network.so.6"
@@ -71,6 +74,7 @@ let
         "libQt6WlShellIntegration.so.6"
       ];
 
+      # Run the vendor installer unattended, then wrap and register the result.
       installPhase = ''
         runHook preInstall
 
@@ -92,6 +96,7 @@ let
         runHook postInstall
       '';
 
+      # Add IDA to desktop application menus.
       desktopItems = [
         (makeDesktopItem {
           name = "ida-home-pc";
@@ -135,5 +140,7 @@ in
   #
   # Old IDA versions remain available through older NixOS generations until
   # those generations are garbage-collected.
-  environment.systemPackages = [ ida-home-pc ];
+  environment.systemPackages = [
+    ida-home-pc # Proprietary IDA Home disassembler built from the seeded installer.
+  ];
 }

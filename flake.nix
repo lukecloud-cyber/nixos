@@ -1,43 +1,44 @@
 {
   description = "sweet_cicero NixOS system configuration";
 
-  nixConfig = {
-    extra-substituters = [ "https://attic.xuyh0120.win/lantian" ];
-    extra-trusted-public-keys = [
-      "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
-    ];
-  };
-
   inputs = {
+    # Rolling NixOS package and module collection.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Prebuilt CachyOS kernels and their NixOS module.
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
-    ratty = {
-      url = "github:orhun/ratty";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Pre-generated command database used by comma/nix-index.
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Star Citizen launcher package and binary cache configuration.
     nix-citizen = {
       url = "github:LovingMelody/nix-citizen";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  #  nixos-hardware.url = "github:NixOS/nixos-hardware";
+    # Vendor hardware profiles used by the Dell laptop.
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
-  outputs = { self, nixpkgs, ... } @ inputs: {
-    nixosConfigurations.nixospc = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
+  outputs =
+    { nixpkgs, ... }@inputs:
+    let
+      mkHost =
+        hostModule:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            inputs.nix-index-database.nixosModules.default
+            ./configuration.nix
+            hostModule
+          ];
+        };
+    in
+    {
+      nixosConfigurations = {
+        nixos = mkHost ./hosts/nixos;
+        nixospc = mkHost ./hosts/nixospc;
       };
-      modules = [
-      #  inputs.ratty.nixosModules.default
-        inputs.nix-index-database.nixosModules.default
-      #  inputs.nixos-hardware.nixosModules.dell-latitude-7490
-        ./configuration.nix
-      ];
     };
-  };
-} 
+}

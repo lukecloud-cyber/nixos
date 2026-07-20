@@ -1,32 +1,33 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
+  # Bundle parsers into Tree-sitter so LazyVim never downloads them at runtime.
   treesitterWithParsers = pkgs.vimPlugins.nvim-treesitter.withPlugins (
     parsers: with parsers; [
-      bash
-      c
-      diff
-      html
-      javascript
-      jsdoc
-      json
-      lua
-      luadoc
-      luap
-      markdown
-      markdown_inline
-      nix
-      printf
-      python
-      query
-      regex
-      toml
-      tsx
-      typescript
-      vim
-      vimdoc
-      xml
-      yaml
+      bash # Shell scripts.
+      c # C source and headers.
+      diff # Unified and context diffs.
+      html # HTML documents.
+      javascript # JavaScript source.
+      jsdoc # JavaScript documentation comments.
+      json # JSON data.
+      lua # Lua source used by Neovim configuration.
+      luadoc # Lua documentation comments.
+      luap # Lua patterns embedded in strings.
+      markdown # Markdown block structure.
+      markdown_inline # Inline Markdown emphasis, links, and code.
+      nix # Nix expressions and modules.
+      printf # printf-style format strings.
+      python # Python source.
+      query # Tree-sitter query files.
+      regex # Regular expressions embedded in other languages.
+      toml # TOML configuration.
+      tsx # TypeScript with JSX syntax.
+      typescript # TypeScript source.
+      vim # Vimscript source.
+      vimdoc # Vim help documentation.
+      xml # XML documents.
+      yaml # YAML data and configuration.
     ]
   );
 in
@@ -34,56 +35,58 @@ in
   # LazyVim is managed through the system Neovim module. Core plugins and
   # editor tooling come from nixpkgs; Lazy remains available for its UI.
   programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    withNodeJs = true;
-    withPython3 = true;
-    withRuby = false;
+    enable = true; # Install Neovim and expose its NixOS integration.
+    defaultEditor = true; # Set EDITOR to Neovim.
+    viAlias = true; # Point `vi` at Neovim.
+    vimAlias = true; # Point `vim` at Neovim.
+    withNodeJs = true; # Supply Node.js for JavaScript-based providers/plugins.
+    withPython3 = true; # Supply Python 3 for Python-based providers/plugins.
+    withRuby = false; # Skip the unused Ruby provider.
 
     configure = {
+      # Put all LazyVim runtime plugins on Neovim's native start package path.
       packages.lazyvim.start = with pkgs.vimPlugins; [
-        lazy-nvim
-        LazyVim
+        lazy-nvim # Plugin manager and LazyVim configuration engine.
+        LazyVim # Opinionated Neovim distribution and default plugin spec.
 
-        blink-cmp
-        blink-compat
-        bufferline-nvim
-        catppuccin-nvim
-        conform-nvim
-        flash-nvim
-        friendly-snippets
-        gitsigns-nvim
-        grug-far-nvim
-        lazydev-nvim
-        lualine-nvim
-        mason-lspconfig-nvim
-        mason-nvim
-        mini-ai
-        mini-icons
-        mini-pairs
-        neo-tree-nvim
-        noice-nvim
-        nui-nvim
-        nvim-lint
-        nvim-lspconfig
-        nvim-treesitter-textobjects
-        nvim-ts-autotag
-        persistence-nvim
-        plenary-nvim
-        render-markdown-nvim
-        SchemaStore-nvim
-        snacks-nvim
-        todo-comments-nvim
-        tokyonight-nvim
-        treesitterWithParsers
-        trouble-nvim
-        ts-comments-nvim
-        which-key-nvim
-        yanky-nvim
+        blink-cmp # Fast completion menu and completion engine.
+        blink-compat # Adapter for nvim-cmp completion sources.
+        bufferline-nvim # Tab-like list of open buffers.
+        catppuccin-nvim # Catppuccin color scheme.
+        conform-nvim # Formatter runner with per-filetype selection.
+        flash-nvim # Label-based navigation to visible text.
+        friendly-snippets # Shared snippets for common languages.
+        gitsigns-nvim # Git change markers and actions in the gutter.
+        grug-far-nvim # Project-wide search and replace interface.
+        lazydev-nvim # Lua language support aware of Neovim APIs.
+        lualine-nvim # Configurable status line.
+        mason-lspconfig-nvim # Bridge between Mason and nvim-lspconfig.
+        mason-nvim # UI for external editor tools; downloads are disabled below.
+        mini-ai # Text objects for arguments, quotes, brackets, and more.
+        mini-icons # Filetype and UI icons.
+        mini-pairs # Automatic bracket and quote pairing.
+        neo-tree-nvim # File, buffer, and Git-status explorer.
+        noice-nvim # Rich command-line, message, and popup UI.
+        nui-nvim # UI component library required by several plugins.
+        nvim-lint # Asynchronous linter runner.
+        nvim-lspconfig # Configurations for Neovim's built-in LSP client.
+        nvim-treesitter-textobjects # Syntax-aware selections and motions.
+        nvim-ts-autotag # Automatically close and rename paired markup tags.
+        persistence-nvim # Save and restore editor sessions.
+        plenary-nvim # Shared Lua utility library for Neovim plugins.
+        render-markdown-nvim # Render Markdown structure inside buffers.
+        SchemaStore-nvim # Catalog of JSON schemas for language servers.
+        snacks-nvim # LazyVim utility collection and UI components.
+        todo-comments-nvim # Highlight and search TODO-style annotations.
+        tokyonight-nvim # Tokyo Night color scheme.
+        treesitterWithParsers # Tree-sitter engine plus the parsers listed above.
+        trouble-nvim # Navigable diagnostics and reference lists.
+        ts-comments-nvim # Language-aware comment strings for embedded syntax.
+        which-key-nvim # Popup guide for available key mappings.
+        yanky-nvim # Enhanced yank history and put operations.
       ];
 
+      # Tell Lazy which Nix store path backs each plugin repository.
       customLuaRC = ''
         local function nix_plugin(repo, dir)
           return { repo, dir = dir }
@@ -129,6 +132,7 @@ in
             nix_plugin("folke/which-key.nvim", "${pkgs.vimPlugins.which-key-nvim}"),
             nix_plugin("gbprod/yanky.nvim", "${pkgs.vimPlugins.yanky-nvim}"),
 
+            -- Load LazyVim defaults and the selected language/editor extras.
             { "LazyVim/LazyVim", import = "lazyvim.plugins" },
             { import = "lazyvim.plugins.extras.lang.nix" },
             { import = "lazyvim.plugins.extras.lang.json" },
@@ -136,6 +140,7 @@ in
             { import = "lazyvim.plugins.extras.editor.neo-tree" },
             { import = "lazyvim.plugins.extras.coding.yanky" },
 
+            -- Nix supplies external tools, so Mason must not install duplicates.
             {
               "mason-org/mason.nvim",
               opts = function(_, opts)
@@ -143,6 +148,7 @@ in
               end,
             },
 
+            -- Nix supplies immutable Tree-sitter parsers listed above.
             {
               "nvim-treesitter/nvim-treesitter",
               opts = function(_, opts)
@@ -150,6 +156,7 @@ in
               end,
             },
 
+            -- Use system language servers and configure nixd for this flake.
             {
               "neovim/nvim-lspconfig",
               opts = {
@@ -168,7 +175,7 @@ in
                         },
                         options = {
                           nixos = {
-                            expr = '(builtins.getFlake "/etc/nixos").nixosConfigurations.nixospc.options',
+                            expr = '(builtins.getFlake "/etc/nixos").nixosConfigurations.${config.networking.hostName}.options',
                           },
                         },
                       },
@@ -182,25 +189,31 @@ in
             },
           },
           defaults = {
+            -- All plugins are already available at startup from the Nix store.
             lazy = false,
             version = false,
           },
           install = {
+            -- Never download missing plugins; retain a built-in fallback theme.
             missing = false,
             colorscheme = { "tokyonight", "habamax" },
           },
           checker = {
+            -- Flake updates, not Lazy, control plugin upgrades.
             enabled = false,
             notify = false,
           },
           change_detection = {
+            -- Nix store plugin paths are immutable and need no reload checks.
             enabled = false,
             notify = false,
           },
           rocks = {
+            -- Do not install LuaRocks dependencies outside Nix.
             enabled = false,
           },
           performance = {
+            -- Preserve Nix's package path and trim unused built-in plugins.
             reset_packpath = false,
             rtp = {
               disabled_plugins = {
@@ -218,24 +231,24 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    alejandra
-    deadnix
-    fzf
-    gcc
-    git
-    lazygit
-    lua-language-server
-    nil
-    nixd
-    nixfmt
-    nodejs
-    prettierd
-    python3
-    shfmt
-    statix
-    stylua
-    tree-sitter
-    vscode-langservers-extracted
-    yaml-language-server
+    alejandra # Opinionated Nix formatter retained for project compatibility.
+    deadnix # Detect unused Nix bindings and dead code.
+    fzf # Fuzzy finder used by editor pickers and shell workflows.
+    gcc # C compiler required by native extensions and tooling.
+    git # Version-control backend used by editor integrations.
+    lazygit # Terminal Git interface launched from LazyVim.
+    lua-language-server # Language server for Lua and Neovim configuration.
+    nil # Alternative Nix language server retained for projects that request it.
+    nixd # Primary Nix language server configured above.
+    nixfmt # Official Nix formatter selected by nixd.
+    nodejs # Runtime for JavaScript language servers and formatters.
+    prettierd # Long-running Prettier formatter daemon.
+    python3 # Runtime for Python editor providers and tools.
+    shfmt # Formatter for shell scripts.
+    statix # Linter for Nix antipatterns.
+    stylua # Formatter for Lua source.
+    tree-sitter # Parser generator and syntax tree command-line tool.
+    vscode-langservers-extracted # HTML, CSS, JSON, and ESLint language servers.
+    yaml-language-server # YAML validation and completion server.
   ];
 }

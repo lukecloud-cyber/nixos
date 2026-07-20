@@ -1,6 +1,12 @@
 { pkgs, ... }:
 
 {
+  environment.systemPackages = [
+    pkgs.codex # OpenAI's terminal coding agent.
+  ];
+
+  # Keep the user's Codex policy at unrestricted local access after each switch.
+  # Existing unrelated TOML settings and tables are preserved.
   system.activationScripts.codexFullAccess = ''
     codex_config=/home/sweet_cicero/.codex/config.toml
     codex_config_dir=$(${pkgs.coreutils}/bin/dirname "$codex_config")
