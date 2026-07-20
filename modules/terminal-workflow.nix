@@ -66,11 +66,9 @@
     vim # Classic terminal text editor and recovery fallback.
     wget # Non-interactive HTTP, HTTPS, and FTP downloader.
     btop # Interactive process, CPU, memory, disk, and network monitor.
-    atuin # Searchable, synchronized shell history database.
     bash-preexec # Bash hooks required by tools that observe command execution.
     bat # Syntax-highlighted `cat` replacement.
     carapace # Multi-shell command completion engine.
-    chezmoi # Declarative dotfile manager.
     dysk # Compact disk and filesystem usage viewer.
     eza # Colorful, Git-aware `ls` replacement.
     fastfetch # Concise system information summary.

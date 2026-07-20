@@ -11,6 +11,11 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Declarative per-user packages and dotfiles.
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Star Citizen launcher package and binary cache configuration.
     nix-citizen = {
       url = "github:LovingMelody/nix-citizen";
@@ -28,7 +33,18 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = { inherit inputs; };
-          modules = [ hostModule ];
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                users.sweet_cicero = import ./home;
+              };
+            }
+            hostModule
+          ];
         };
     in
     {

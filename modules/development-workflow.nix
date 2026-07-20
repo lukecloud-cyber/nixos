@@ -19,7 +19,6 @@
 
   environment.systemPackages = with pkgs; [
     direnv # Load and unload per-directory shell environments.
-    gh # GitHub command-line client.
     glab # GitLab command-line client.
     shellcheck # Static analyzer for shell scripts.
     yq-go # Query and edit YAML, JSON, XML, and related formats.
