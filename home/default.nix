@@ -1,10 +1,11 @@
 { lib, pkgs, ... }:
 
 {
+  # Define the user profile and files that belong directly in the home directory.
   home = {
     username = "sweet_cicero";
     homeDirectory = "/home/sweet_cicero";
-    stateVersion = "26.05";
+    stateVersion = "26.05"; # Keep compatibility defaults fixed across Home Manager upgrades.
 
     # Keep GitHub authentication delegated to gh without storing credentials here.
     file.".gitconfig".text = ''
@@ -17,10 +18,12 @@
     '';
   };
 
+  # Manage XDG configuration, application data, and desktop MIME handlers.
   xdg = {
     enable = true;
 
     configFile = {
+      # Configure Glow's terminal Markdown rendering defaults.
       "glow/glow.yml".text = ''
         style: "auto"
         mouse: false
@@ -29,6 +32,7 @@
         all: false
       '';
 
+      # Make the Fish-based profile the default for KDE Konsole.
       "konsolerc".text = ''
         [Desktop Entry]
         DefaultProfile=Fish.profile
@@ -46,6 +50,7 @@
     };
 
     dataFile = {
+      # Define the Konsole profile referenced by konsolerc above.
       "konsole/Fish.profile".text = ''
         [Appearance]
         Font=JetBrainsMono Nerd Font,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
@@ -57,6 +62,7 @@
         Parent=FALLBACK/
       '';
 
+      # Add a Steam launcher for Bloodlines 2 to the desktop application menu.
       "applications/Vampire The Masquerade - Bloodlines 2.desktop" = {
         executable = true;
         text = ''
@@ -72,6 +78,7 @@
       };
     };
 
+    # Route mail links to Brave and Heroic links to the Heroic launcher.
     mimeApps = {
       enable = true;
       associations.added = {
@@ -85,18 +92,21 @@
     };
   };
 
+  # Install and configure user-facing tools whose settings live in the home directory.
   programs = {
+    # Enable VS Code by default; individual NixOS hosts can override this value.
     vscode = {
       enable = lib.mkDefault true;
       profiles.default.extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        ms-vscode.cpptools
-        ms-python.python
-        ms-python.vscode-pylance
-        ms-python.debugpy
+        jnoortheen.nix-ide # Nix syntax, formatting, and language-server integration.
+        ms-vscode.cpptools # Microsoft C/C++ IntelliSense, navigation, and debugging.
+        ms-python.python # Core Python editing, testing, and environment integration.
+        ms-python.vscode-pylance # Fast Python completion, navigation, and type analysis.
+        ms-python.debugpy # Python debugging with breakpoints and variable inspection.
       ];
     };
 
+    # Store searchable shell history in Atuin without adding duplicate Fish hooks.
     atuin = {
       enable = true;
       enableFishIntegration = false;
@@ -107,12 +117,14 @@
       };
     };
 
+    # Manage btop settings while using the system-installed btop package.
     btop = {
       enable = true;
-      package = null;
+      package = null; # Avoid installing a second copy alongside systemPackages.
       settings.graph_symbol = "braille";
     };
 
+    # Configure the GitHub CLI and leave Git credential wiring to .gitconfig above.
     gh = {
       enable = true;
       gitCredentialHelper.enable = false;

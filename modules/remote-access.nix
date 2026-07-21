@@ -7,6 +7,7 @@
     openFirewall = true;
   };
 
+  # Install a graphical client for connecting to remote desktops.
   environment.systemPackages = [
     pkgs.kdePackages.krdc # KDE client for RDP and VNC remote desktops.
   ];

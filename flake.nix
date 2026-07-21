@@ -28,6 +28,8 @@
   outputs =
     { nixpkgs, ... }@inputs:
     let
+      # Build both machines from the same architecture, Home Manager profile,
+      # and shared flake inputs; each host module supplies its hardware choices.
       mkHost =
         hostModule:
         nixpkgs.lib.nixosSystem {
@@ -37,10 +39,10 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                users.sweet_cicero = import ./home;
+                useGlobalPkgs = true; # Reuse the system's pinned and configured nixpkgs.
+                useUserPackages = true; # Install Home Manager packages in the per-user profile.
+                backupFileExtension = "hm-backup"; # Preserve replaced dotfiles instead of failing.
+                users.sweet_cicero = import ./home; # Apply the shared user configuration to each host.
               };
             }
             hostModule
@@ -48,6 +50,7 @@
         };
     in
     {
+      # Map stable flake output names to their host-specific modules.
       nixosConfigurations = {
         nixos = mkHost ./hosts/nixos;
         nixospc = mkHost ./hosts/nixospc;

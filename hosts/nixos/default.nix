@@ -1,6 +1,7 @@
 { inputs, ... }:
 
 {
+  # Compose the laptop from generated hardware settings and shared feature modules.
   imports = [
     ./hardware-configuration.nix
     inputs.nixos-hardware.nixosModules.dell-latitude-7490
@@ -28,12 +29,16 @@
     ../../modules/container-development.nix
   ];
 
+  # Use this name for networking and the corresponding flake output.
   networking.hostName = "nixos";
 
+  # Host override: Home Manager enables VS Code by default. Keep this commented
+  # out (or set it true) to enable VS Code; uncomment the false value to disable it.
   # home-manager.users.sweet_cicero.programs.vscode.enable = false;
 
+  # Unlock the laptop's encrypted root storage during early boot.
   boot.initrd.luks.devices."luks-fa6ca2aa-a1ea-4a94-9f2d-6a9d78ba1878".device =
     "/dev/disk/by-uuid/fa6ca2aa-a1ea-4a94-9f2d-6a9d78ba1878";
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.05"; # Preserve compatibility defaults across NixOS upgrades.
 }

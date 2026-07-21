@@ -44,6 +44,7 @@
     KERNEL=="ntsync", MODE="0660", TAG+="uaccess"
   '';
 
+  # Install game launchers and compatibility-management utilities.
   environment.systemPackages = with pkgs; [
     heroic # Launcher for Epic, GOG, and Amazon game libraries.
     steamtinkerlaunch # Wrapper for configuring tools such as MangoHud and mod managers.

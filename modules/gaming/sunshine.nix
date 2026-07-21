@@ -1,9 +1,11 @@
 {
+  # Run the Sunshine game-streaming host without opening ports on every interface.
   services.sunshine = {
     enable = true;
     openFirewall = false;
   };
 
+  # Expose Sunshine's control, video, audio, and input ports only over Tailscale.
   networking.firewall.interfaces.tailscale0 = {
     allowedTCPPorts = [
       47984

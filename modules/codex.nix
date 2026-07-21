@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+  # Install the Codex command-line application system-wide.
   environment.systemPackages = [
     pkgs.codex # OpenAI's terminal coding agent.
   ];

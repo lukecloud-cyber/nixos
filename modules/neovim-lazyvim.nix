@@ -230,6 +230,7 @@ in
     };
   };
 
+  # Install the external language servers, formatters, and CLI tools used above.
   environment.systemPackages = with pkgs; [
     alejandra # Opinionated Nix formatter retained for project compatibility.
     deadnix # Detect unused Nix bindings and dead code.

@@ -17,6 +17,7 @@
     };
   };
 
+  # Install command-line tools shared by development projects.
   environment.systemPackages = with pkgs; [
     direnv # Load and unload per-directory shell environments.
     glab # GitLab command-line client.

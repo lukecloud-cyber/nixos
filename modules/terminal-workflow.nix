@@ -62,6 +62,7 @@
     ];
   };
 
+  # Install the terminal applications referenced by the shell configuration above.
   environment.systemPackages = with pkgs; [
     vim # Classic terminal text editor and recovery fallback.
     wget # Non-interactive HTTP, HTTPS, and FTP downloader.
