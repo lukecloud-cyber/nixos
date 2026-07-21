@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   home = {
@@ -86,6 +86,17 @@
   };
 
   programs = {
+    vscode = {
+      enable = lib.mkDefault true;
+      profiles.default.extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        ms-vscode.cpptools
+        ms-python.python
+        ms-python.vscode-pylance
+        ms-python.debugpy
+      ];
+    };
+
     atuin = {
       enable = true;
       enableFishIntegration = false;
