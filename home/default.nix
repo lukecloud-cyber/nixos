@@ -16,6 +16,9 @@
         helper =
         helper = !${pkgs.gh}/bin/gh auth git-credential
     '';
+
+    # Load reversing MCP servers only from this trusted project tree.
+    file."Projects/reversing/.codex/config.toml".source = ./files/reversing-codex.toml;
   };
 
   # Manage XDG configuration, application data, and desktop MIME handlers.
