@@ -94,4 +94,4 @@
     e2fsprogs
     p7zip# Inspect and repair ext2/ext3/ext4 filesystems.
   ];
-i}
+}
