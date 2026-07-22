@@ -1,0 +1,159 @@
+{ pkgs, lib, ... }:
+
+let
+  # Package the proprietary Binary Ninja Personal archive as a reproducible local package.
+  binaryninja-personal = pkgs.callPackage (
+    {
+      autoPatchelfHook,
+      copyDesktopItems,
+      curl,
+      dbus,
+      fontconfig,
+      freetype,
+      lib,
+      libglvnd,
+      libxkbcommon,
+      libxcb-image,
+      libxcb-keysyms,
+      libxcb-render-util,
+      libxcb-wm,
+      makeDesktopItem,
+      makeWrapper,
+      qt6,
+      requireFile,
+      stdenv,
+      unzip,
+      wayland,
+      xorg,
+      zlib,
+    }:
+
+    let
+      runtimeLibs = [
+        curl
+        dbus
+        fontconfig
+        freetype
+        libglvnd
+        libxkbcommon
+        libxcb-image
+        libxcb-keysyms
+        libxcb-render-util
+        libxcb-wm
+        qt6.qtbase
+        qt6.qtdeclarative
+        qt6.qtshadertools
+        stdenv.cc.cc.lib
+        wayland
+        xorg.libX11
+        xorg.libxcb
+        zlib
+      ];
+      mimeInfo = pkgs.writeText "application-x-binaryninja.xml" ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+          <mime-type type="application/x-binaryninja">
+            <comment>Binary Ninja Analysis Database</comment>
+            <icon name="application-x-binaryninja"/>
+            <glob pattern="*.bndb"/>
+            <glob pattern="*.bnpm"/>
+            <glob pattern="*.bnta"/>
+            <sub-class-of type="application/x-sqlite3"/>
+          </mime-type>
+        </mime-info>
+      '';
+    in
+    stdenv.mkDerivation {
+      pname = "binaryninja-personal";
+      version = "5.3";
+
+      src = requireFile {
+        name = "binaryninja_linux_stable_personal.zip";
+        sha256 = "sha256-RbxS0lW8sWcTQ6Sk5Ify6Ublu5vfdjQCFLdwWUSTE24=";
+        message = ''
+          Add the Binary Ninja Personal archive to the Nix store first:
+
+            nix-store --add-fixed sha256 ~/binaryninja/binaryninja_linux_stable_personal.zip
+        '';
+      };
+
+      nativeBuildInputs = [
+        autoPatchelfHook
+        copyDesktopItems
+        makeWrapper
+        unzip
+      ];
+      buildInputs = runtimeLibs;
+      sourceRoot = "binaryninja";
+      dontWrapQtApps = true; # Binary Ninja ships Qt plugins and its own qt.conf.
+
+      installPhase = ''
+        runHook preInstall
+
+        mkdir -p "$out"
+        cp -a . "$out"
+
+        mkdir -p "$out/bin"
+        makeWrapper "$out/binaryninja" "$out/bin/binaryninja" \
+          --prefix PYTHONPATH : "$out/python:$out/python3:${pkgs.python312Packages.packaging}/${pkgs.python312.sitePackages}" \
+          --prefix LD_LIBRARY_PATH : "${pkgs.python312}/lib"
+
+        install -Dm644 "$out/docs/img/logo.png" \
+          "$out/share/icons/hicolor/256x256/apps/binaryninja.png"
+        install -Dm644 ${mimeInfo} \
+          "$out/share/mime/packages/application-x-binaryninja.xml"
+
+        runHook postInstall
+      '';
+
+      # Keep documentation challenge binaries byte-for-byte intact instead of
+      # treating them as application executables during ELF patching.
+      preFixup = ''
+        mv "$out/docs/files" "$TMPDIR/binaryninja-doc-files"
+      '';
+      postFixup = ''
+        mkdir -p "$out/docs"
+        mv "$TMPDIR/binaryninja-doc-files" "$out/docs/files"
+      '';
+
+      desktopItems = [
+        (makeDesktopItem {
+          name = "com.vector35.binaryninja";
+          desktopName = "Binary Ninja Personal";
+          comment = "A reverse engineering platform";
+          exec = "binaryninja %u";
+          icon = "binaryninja";
+          mimeTypes = [
+            "application/x-binaryninja"
+            "x-scheme-handler/binaryninja"
+          ];
+          categories = [ "Development" ];
+        })
+      ];
+
+      meta = {
+        description = "Interactive decompiler, disassembler, and debugger";
+        homepage = "https://binary.ninja/";
+        license = lib.licenses.unfree;
+        platforms = [ "x86_64-linux" ];
+        mainProgram = "binaryninja";
+      };
+    }
+  ) { };
+in
+{
+  # Reproduce linux-setup.sh's user integration declaratively.
+  home-manager.users.sweet_cicero.home.file = {
+    ".binaryninja/lastrun".text = "${binaryninja-personal}\n";
+    ".local/lib/python${pkgs.python312.pythonVersion}/site-packages/binaryninja.pth".text = ''
+      ${binaryninja-personal}/python
+      ${binaryninja-personal}/python3
+      ${pkgs.python312Packages.packaging}/${pkgs.python312.sitePackages}
+    '';
+  };
+
+  # This module is self-contained: importing it defines and installs the package.
+  # To upgrade, replace the archive, update version and sha256 above, seed the new
+  # fixed-output path, and rebuild the system.
+  environment.systemPackages = [ binaryninja-personal ];
+}

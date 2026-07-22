@@ -203,7 +203,7 @@ in
   nixpkgs.config.allowUnfreePredicate =
     pkg:
     builtins.elem (lib.getName pkg) [
-      "binaryninja-free"
+      "binaryninja-personal"
       "ida-home-pc"
       "volatility3"
     ];
@@ -225,7 +225,6 @@ in
     # Disassemblers and decompilers
     ghidraWithMcp # Ghidra software reverse-engineering suite with MCP extension.
     ghidraMcpBridge # MCP server that relays analysis requests to Ghidra.
-    binaryninja-free # Free edition of the Binary Ninja reverse-engineering platform.
     radare2 # Command-line reverse-engineering framework.
     rizin # Fork of radare2 with analysis and patching tools.
     cutter # Qt graphical interface for Rizin.

@@ -23,6 +23,7 @@
     ../../modules/gaming/sunshine.nix
     ../../modules/fonts.nix
     ../../modules/codex.nix
+    ../../modules/reverse-engineering/binaryninja.nix
     ../../modules/reverse-engineering/ida-home.nix
     ../../modules/reverse-engineering/tools.nix
     ../../modules/neovim-lazyvim.nix
