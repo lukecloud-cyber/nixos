@@ -25,6 +25,7 @@
     ../../modules/codex.nix
     ../../modules/reverse-engineering/ida-home.nix
     ../../modules/reverse-engineering/tools.nix
+    ../../modules/reverse-engineering/binaryninja.nix
     ../../modules/neovim-lazyvim.nix
     ../../modules/container-development.nix
   ];
