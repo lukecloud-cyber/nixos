@@ -1,6 +1,58 @@
 { pkgs, lib, ... }:
 
 let
+  sidekickPython = pkgs.python312.withPackages (
+    ps:
+    let
+      pysqlite3 = ps.buildPythonPackage rec {
+        pname = "pysqlite3";
+        version = "0.6.0";
+        pyproject = true;
+
+        src = pkgs.fetchPypi {
+          inherit pname version;
+          hash = "sha256-7PURK2Kk5sBEOJV+ND/pZycHvTGR94nsrmyVsiaqa7Y=";
+        };
+
+        build-system = [ ps.setuptools ];
+        buildInputs = [ pkgs.sqlite ];
+        pythonImportsCheck = [ "pysqlite3" ];
+      };
+      tenacity = ps.tenacity.overridePythonAttrs (_: rec {
+        version = "8.5.0";
+        src = pkgs.fetchPypi {
+          pname = "tenacity";
+          inherit version;
+          hash = "sha256-i8bAyKCbMebK0TxHr77RpWdRglCpoXFBhYLtjZwgyng=";
+        };
+      });
+      sqlite-vec = ps."sqlite-vec".overridePythonAttrs (old: {
+        dependencies = (old.dependencies or [ ]) ++ [ ps.numpy ];
+        # ponytail: nixpkgs' check pulls OpenAI only for tests; drop this override when it no longer does.
+        doInstallCheck = false;
+        nativeCheckInputs = [ ];
+      });
+    in
+    [
+      ps.arrow
+      ps.httpx
+      ps.jinja2
+      ps."markdown-it-py"
+      ps.networkx
+      ps.numpy
+      ps.orjson
+      ps.packaging
+      ps.psutil
+      ps.pydantic
+      ps.pygments
+      pysqlite3
+      ps.pyyaml
+      ps.requests
+      sqlite-vec
+      tenacity
+    ]
+  );
+
   # Package the proprietary Binary Ninja Personal archive as a reproducible local package.
   binaryninja-personal = pkgs.callPackage (
     {
@@ -95,7 +147,8 @@ let
 
         mkdir -p "$out/bin"
         makeWrapper "$out/binaryninja" "$out/bin/binaryninja" \
-          --prefix PYTHONPATH : "$out/python:$out/python3:${pkgs.python312Packages.packaging}/${pkgs.python312.sitePackages}" \
+          --prefix PATH : "${lib.makeBinPath [ pkgs.pyright ]}" \
+          --prefix PYTHONPATH : "$out/python:$out/python3:${sidekickPython}/${pkgs.python312.sitePackages}" \
           --prefix LD_LIBRARY_PATH : "${pkgs.python312}/lib"
 
         install -Dm644 "$out/docs/img/logo.png" \
@@ -148,7 +201,7 @@ in
     ".local/lib/python${pkgs.python312.pythonVersion}/site-packages/binaryninja.pth".text = ''
       ${binaryninja-personal}/python
       ${binaryninja-personal}/python3
-      ${pkgs.python312Packages.packaging}/${pkgs.python312.sitePackages}
+      ${sidekickPython}/${pkgs.python312.sitePackages}
     '';
   };
 
