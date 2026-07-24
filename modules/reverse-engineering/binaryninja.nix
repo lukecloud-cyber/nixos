@@ -53,6 +53,12 @@ let
     ]
   );
 
+  sidekickPlugin = pkgs.fetchzip {
+    url = "https://extensions.binary.ninja/v1/extensions/21efa4ff-9499-4dff-affc-8715225b5b2d/versions/200d0f99-70ed-4462-93b7-2dbfbc75d0e0/platforms/3602/download?notrack=1";
+    extension = "zip";
+    hash = "sha256-NtUKlHrfX1EJXPUNdE5zWxg2uWr7nyvEjJvw0azDx14=";
+  };
+
   # Package the proprietary Binary Ninja Personal archive as a reproducible local package.
   binaryninja-personal = pkgs.callPackage (
     {
@@ -148,7 +154,7 @@ let
         mkdir -p "$out/bin"
         makeWrapper "$out/binaryninja" "$out/bin/binaryninja" \
           --prefix PATH : "${lib.makeBinPath [ pkgs.pyright ]}" \
-          --prefix PYTHONPATH : "$out/python:$out/python3:${sidekickPython}/${pkgs.python312.sitePackages}" \
+          --prefix PYTHONPATH : "$out/python:$out/python3:${sidekickPlugin}:${sidekickPython}/${pkgs.python312.sitePackages}" \
           --prefix LD_LIBRARY_PATH : "${pkgs.python312}/lib"
 
         install -Dm644 "$out/docs/img/logo.png" \
@@ -198,9 +204,11 @@ in
   # Reproduce linux-setup.sh's user integration declaratively.
   home-manager.users.sweet_cicero.home.file = {
     ".binaryninja/lastrun".text = "${binaryninja-personal}\n";
+    ".binaryninja/plugins/Vector35_Sidekick".source = sidekickPlugin;
     ".local/lib/python${pkgs.python312.pythonVersion}/site-packages/binaryninja.pth".text = ''
       ${binaryninja-personal}/python
       ${binaryninja-personal}/python3
+      ${sidekickPlugin}
       ${sidekickPython}/${pkgs.python312.sitePackages}
     '';
   };
@@ -209,4 +217,5 @@ in
   # To upgrade, replace the archive, update version and sha256 above, seed the new
   # fixed-output path, and rebuild the system.
   environment.systemPackages = [ binaryninja-personal ];
+  system.extraDependencies = [ binaryninja-personal.src ];
 }

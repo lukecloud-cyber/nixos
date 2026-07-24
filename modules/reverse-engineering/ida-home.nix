@@ -143,4 +143,5 @@ in
   environment.systemPackages = [
     ida-home-pc # Proprietary IDA Home disassembler built from the seeded installer.
   ];
+  system.extraDependencies = [ ida-home-pc.src ];
 }
