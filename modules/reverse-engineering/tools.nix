@@ -86,6 +86,10 @@ let
     ];
   });
 
+  mitmproxy = pkgs.mitmproxy.overridePythonAttrs (old: {
+    pythonRelaxDeps = (old.pythonRelaxDeps or [ ]) ++ [ "msgpack" ];
+  });
+
   # Pin the shared GhidraMCP source used by both the extension and Python bridge.
   ghidraMcpSrc = pkgs.fetchFromGitHub {
     owner = "LaurieWired";
