@@ -20,6 +20,7 @@
     nix-citizen = {
       url = "github:LovingMelody/nix-citizen";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "nix-cachyos-kernel/flake-compat";
     };
     # Vendor hardware profiles used by the Dell laptop.
     nixos-hardware.url = "github:NixOS/nixos-hardware";
