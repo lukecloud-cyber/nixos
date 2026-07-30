@@ -3,6 +3,7 @@
 {
   # Install systemd-boot into the EFI System Partition.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.timeout = 10;
   # Allow NixOS to create and update firmware boot entries.
   boot.loader.efi.canTouchEfiVariables = true;
 
