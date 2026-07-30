@@ -27,7 +27,9 @@
     ../../modules/reverse-engineering/tools.nix
     ../../modules/reverse-engineering/binaryninja.nix
     ../../modules/neovim-lazyvim.nix
-    ../../modules/container-development.nix
+    ../../modules/virtualization/container-development.nix
+    ../../modules/virtualization/qemu.nix
+    ../../modules/virtualization/virt-manager.nix
   ];
 
   # Use this name for networking and the corresponding flake output.

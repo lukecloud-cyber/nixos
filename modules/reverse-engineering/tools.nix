@@ -263,7 +263,6 @@ in
     dex2jar # Convert Android DEX bytecode to Java class/JAR files.
 
     # Emulation and Windows targets
-    qemu # Full-system and user-mode machine emulator.
     wineWow64Packages.stable # Run 32-bit and 64-bit Windows applications.
     dosbox # Emulate DOS-era x86 hardware and software.
 
