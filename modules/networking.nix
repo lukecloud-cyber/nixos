@@ -8,4 +8,10 @@
     allowPing = false;
     checkReversePath = true;
   };
+
+  # Join the private Tailscale mesh and permit its transport traffic.
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+  };
 }

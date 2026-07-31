@@ -8,8 +8,8 @@
     inputs.nix-index-database.nixosModules.default
     ../../modules/boot.nix
     ../../modules/nix-workflow.nix
-    ../../modules/local-network.nix
-    ../../modules/remote-access.nix
+    ../../modules/networking.nix
+    ../../modules/ssh-server.nix
     ../../modules/regional-settings.nix
     ../../modules/plasma-workstation.nix
     ../../modules/sweet-cicero.nix

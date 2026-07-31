@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   # Provide the X server used by Plasma's X11 session and XWayland clients.
   services.xserver.enable = true;
@@ -5,6 +7,11 @@
   # Start the SDDM login manager and KDE Plasma 6 desktop.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # Install a graphical client for connecting to remote desktops.
+  environment.systemPackages = [
+    pkgs.kdePackages.krdc # KDE client for RDP and VNC remote desktops.
+  ];
 
   # Ensure PolicyKit is ready before the firmware refresh service starts.
   systemd.services.fwupd-refresh = {

@@ -1,12 +1,4 @@
-{ pkgs, ... }:
-
 {
-  # Join the private Tailscale mesh and permit its transport traffic.
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-  };
-
   # Accept SSH connections only from declared public keys.
   services.openssh = {
     enable = true;
@@ -36,9 +28,4 @@
     iptables -w -A nixos-fw -s 192.168.1.0/24 -p tcp --dport 22 -j nixos-fw-accept
   '';
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
-
-  # Install a graphical client for connecting to remote desktops.
-  environment.systemPackages = [
-    pkgs.kdePackages.krdc # KDE client for RDP and VNC remote desktops.
-  ];
 }
