@@ -26,6 +26,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    podman-compose
+    podman-compose # Define and run multi-container Podman applications.
+    podman-tui # Manage Podman containers from a terminal interface.
   ];
 }

@@ -12,7 +12,7 @@
     shell = pkgs.fish; # Use Fish as the login shell.
     packages = with pkgs; [
       kdePackages.kate # KDE graphical text and source editor.
-      vlc
+      vlc # Desktop media player for audio and video files.
     ];
   };
 

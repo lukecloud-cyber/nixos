@@ -13,6 +13,6 @@
   environment.systemPackages = [
     (inputs.nix-citizen.packages.${pkgs.stdenv.hostPlatform.system}.rsi-launcher.override {
       extraEnvVars.PULSE_LATENCY_MSEC = "60";
-    })
+    }) # Star Citizen launcher with the configured audio latency.
   ];
 }

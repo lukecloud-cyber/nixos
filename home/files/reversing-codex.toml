@@ -1,3 +1,4 @@
+# Connect Codex to the local IDA database MCP server.
 [mcp_servers.idalib]
 command = "/home/sweet_cicero/Projects/reversing/.codex/bin/idalib-mcp"
 args = ["--stdio"]
@@ -6,6 +7,7 @@ env = { IDADIR = "/nix/store/q70savz1dnbdis15b6d1jl6b04kmgnv7-ida-home-pc-9.4" }
 startup_timeout_sec = 30
 tool_timeout_sec = 1800
 
+# Connect Codex to the project math MCP server.
 [mcp_servers.math]
 command = "node"
 args = ["/home/sweet_cicero/Projects/reversing/.codex/mcp/math-mcp/build/index.js"]
@@ -13,6 +15,7 @@ cwd = "/home/sweet_cicero/Projects/reversing"
 startup_timeout_sec = 10
 tool_timeout_sec = 60
 
+# Connect Codex to the local Ghidra MCP bridge.
 [mcp_servers.ghidra]
 command = "/run/current-system/sw/bin/ghidra-mcp"
 args = ["--ghidra-server", "http://127.0.0.1:8080/"]
@@ -20,6 +23,7 @@ cwd = "/home/sweet_cicero/Projects/reversing"
 startup_timeout_sec = 10
 tool_timeout_sec = 300
 
+# Connect Codex to the Binary Ninja MCP server through npx.
 [mcp_servers.binary_ninja_mcp]
 command = "/run/current-system/sw/bin/npx"
 args = ["-y", "binary-ninja-mcp@1.0.0", "--host", "127.0.0.1", "--port", "9009"]

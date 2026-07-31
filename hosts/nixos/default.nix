@@ -14,7 +14,7 @@
     ../../modules/plasma-workstation.nix
     ../../modules/sweet-cicero.nix
     ../../modules/terminal-workflow.nix
-    ../../modules/development-workflow.nix
+    ../../modules/development.nix
     ../../modules/browsers.nix
     ../../modules/communication.nix
     ../../modules/office.nix

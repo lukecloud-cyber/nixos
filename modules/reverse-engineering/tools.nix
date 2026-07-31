@@ -203,9 +203,9 @@ in
   nixpkgs.config.allowUnfreePredicate =
     pkg:
     builtins.elem (lib.getName pkg) [
-      "binaryninja-personal"
-      "ida-home-pc"
-      "volatility3"
+      "binaryninja-personal" # Proprietary Binary Ninja package.
+      "ida-home-pc" # Proprietary IDA Home package.
+      "volatility3" # Memory forensics framework with a restricted license.
     ];
 
   environment.systemPackages = with pkgs; [

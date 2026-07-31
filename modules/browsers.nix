@@ -6,7 +6,7 @@
 
   # Install additional graphical web browsers system-wide.
   environment.systemPackages = [
-    pkgs.brave #Chromium-based browser with built-in privacy protections.
-    pkgs.google-chrome
-    ];
+    pkgs.brave # Chromium-based browser with built-in privacy protections.
+    pkgs.google-chrome # Google Chrome web browser.
+  ];
 }

@@ -14,7 +14,7 @@
     ../../modules/plasma-workstation.nix
     ../../modules/sweet-cicero.nix
     ../../modules/terminal-workflow.nix
-    ../../modules/development-workflow.nix
+    ../../modules/development.nix
     ../../modules/browsers.nix
     ../../modules/communication.nix
     ../../modules/office.nix
@@ -28,6 +28,7 @@
     ../../modules/reverse-engineering/tools.nix
     ../../modules/neovim-lazyvim.nix
     ../../modules/virtualization/podman.nix
+  # ../../modules/virtualization/docker.nix
     ../../modules/virtualization/dockur-windows-crackme.nix
     ../../modules/virtualization/qemu.nix
     ../../modules/virtualization/virt-manager.nix

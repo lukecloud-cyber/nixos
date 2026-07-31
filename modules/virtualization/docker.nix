@@ -10,7 +10,7 @@
 
   # Install the Docker management tools.
   environment.systemPackages = with pkgs; [
-    docker-compose
-    lazydocker
+    docker-compose # Define and run multi-container Docker applications.
+    lazydocker # Manage Docker containers from a terminal interface.
   ];
 }

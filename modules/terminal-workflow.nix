@@ -91,7 +91,7 @@
     pciutils # Inspect PCI devices with tools such as `lspci`.
     unzip # Extract and inspect ZIP archives.
     util-linux # Essential Linux administration and block-device utilities.
-    e2fsprogs
-    p7zip# Inspect and repair ext2/ext3/ext4 filesystems.
+    e2fsprogs # Create and inspect ext2, ext3, and ext4 filesystems.
+    p7zip # Create and extract 7z and related archives.
   ];
 }
