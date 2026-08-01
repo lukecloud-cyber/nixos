@@ -1,6 +1,12 @@
 { config, lib, ... }:
 
 {
+  # Wait for Tailscale to create its address before Docker binds RDP.
+  systemd.services.docker-dockur-windows-crackme-current = {
+    after = [ "tailscaled.service" ];
+    requires = [ "tailscaled.service" ];
+  };
+
   # Run an isolated Windows 11 lab for reverse-engineering challenge files.
   virtualisation.oci-containers.containers."dockur-windows-crackme-current" = {
     # Use the pinned Dockur Windows container image.
@@ -30,12 +36,18 @@
     # Allow the guest to manage its virtual network interface.
     capabilities.NET_ADMIN = true;
 
-    # Expose the guest console locally and the RDP service on port 3390.
+    # Expose the guest console locally and expose RDP locally and through Tailscale.
     ports = [
       "127.0.0.1:8006:8006"
       "127.0.0.1:5900:5900"
-      "0.0.0.0:3390:3389/tcp"
-      "0.0.0.0:3390:3389/udp"
+      "127.0.0.1:3390:3389/tcp"
+      "127.0.0.1:3390:3389/udp"
+      # ponytail: Update this address if Wi-Fi assigns a new host address.
+      "192.168.1.228:3390:3389/tcp"
+      "192.168.1.228:3390:3389/udp"
+      # ponytail: Update this address if Tailscale assigns a new node address.
+      "100.87.44.103:3390:3389/tcp"
+      "100.87.44.103:3390:3389/udp"
     ];
 
     # Persist the Windows disk and share challenge files with the host.
