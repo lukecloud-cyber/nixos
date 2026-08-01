@@ -27,8 +27,8 @@
     ../../modules/reverse-engineering/ida-home.nix
     ../../modules/reverse-engineering/tools.nix
     ../../modules/neovim-lazyvim.nix
-    ../../modules/virtualization/podman.nix
-  # ../../modules/virtualization/docker.nix
+    # ../../modules/virtualization/podman.nix
+    ../../modules/virtualization/docker.nix
     ../../modules/virtualization/dockur-windows-crackme.nix
     ../../modules/virtualization/qemu.nix
     ../../modules/virtualization/virt-manager.nix
