@@ -6,6 +6,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # Prebuilt CachyOS kernels and their NixOS module.
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    # GPU-rendered terminal emulator and its NixOS module.
+    ratty = {
+      url = "github:orhun/ratty";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Pre-generated command database used by comma/nix-index.
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -37,7 +42,6 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs; };
           modules = [
-            # inputs.ratty.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager = {

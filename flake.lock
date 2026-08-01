@@ -1,5 +1,20 @@
 {
   "nodes": {
+    "crane": {
+      "locked": {
+        "lastModified": 1780532242,
+        "narHash": "sha256-D+BsdpxmtUwtqGoY0IXPhHgTlmqgcZKCEo1oMyn7ep0=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "59a82a1222dd3b2080b5cc52a1a2e8d5f1b77f37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -286,6 +301,27 @@
         "type": "github"
       }
     },
+    "ratty": {
+      "inputs": {
+        "crane": "crane",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785362724,
+        "narHash": "sha256-ndEMBoRD7c2A1brCc5Qv5WQgTX5QQfbsD6qPxID0JTg=",
+        "owner": "orhun",
+        "repo": "ratty",
+        "rev": "eb1ef47b99d56a5df86bb67302e41a5255dad2f3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "orhun",
+        "repo": "ratty",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
@@ -293,7 +329,8 @@
         "nix-citizen": "nix-citizen",
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_3",
+        "ratty": "ratty"
       }
     },
     "treefmt-nix": {
