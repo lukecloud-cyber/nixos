@@ -51,6 +51,7 @@
 
   # Enable the fast, context-aware cross-shell prompt.
   programs.starship.enable = true;
+  # programs.ratty.enable = true;
 
   # Track frequently visited directories and expose it as `cd`.
   programs.zoxide = {
