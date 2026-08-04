@@ -14,6 +14,7 @@
     ../../modules/plasma-workstation.nix
     ../../modules/sweet-cicero.nix
     ../../modules/cli-tools/terminal-workflow.nix
+    ../../modules/cli-tools/yazi.nix
     ../../modules/cli-tools/ratty.nix
     ../../modules/development.nix
     ../../modules/browsers.nix
