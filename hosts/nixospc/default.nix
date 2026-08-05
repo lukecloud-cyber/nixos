@@ -16,6 +16,7 @@
     ../../modules/cli-tools/terminal-workflow.nix
     ../../modules/cli-tools/yazi.nix
     ../../modules/development.nix
+    ../../devshell/python-tutorial.nix
     ../../modules/browsers.nix
     ../../modules/communication.nix
     ../../modules/office.nix

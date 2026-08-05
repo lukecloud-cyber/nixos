@@ -61,5 +61,23 @@
         nixos = mkHost ./hosts/nixos;
         nixospc = mkHost ./hosts/nixospc;
       };
+
+      # Provide the Python tutorial environment without installing its packages globally.
+      devShells.x86_64-linux.python-tutorial =
+        let
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in
+        pkgs.mkShell {
+          packages = [
+            pkgs.python3
+            pkgs.python3Packages.numpy
+            pkgs.python313Packages.ipython
+          ];
+
+          env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            pkgs.libz
+          ];
+        };
     };
 }
