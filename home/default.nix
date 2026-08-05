@@ -26,6 +26,9 @@
     enable = true;
 
     configFile = {
+      # Replace MIME changes from desktop tools with the declared associations.
+      "mimeapps.list".force = true;
+
       # Configure Glow's terminal Markdown rendering defaults.
       "glow/glow.yml".text = ''
         style: "auto"
