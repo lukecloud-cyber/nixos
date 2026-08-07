@@ -11,7 +11,7 @@
     ../../modules/networking.nix
     ../../modules/ssh-server.nix
     ../../modules/regional-settings.nix
-    ../../modules/plasma-workstation.nix
+    ../../modules/DE/KDE-plasma.nix
     ../../modules/sweet-cicero.nix
     ../../modules/cli-tools/terminal-workflow.nix
     ../../modules/cli-tools/yazi.nix
