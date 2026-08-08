@@ -5,7 +5,7 @@ let
   sidekickPython = pkgs.python312.withPackages (
     ps:
     let
-      pysqlite3 = ps.buildPythonPackage rec {
+      localPysqlite3 = ps.buildPythonPackage rec {
         pname = "pysqlite3";
         version = "0.6.0";
         pyproject = true;
@@ -19,6 +19,16 @@ let
         buildInputs = [ pkgs.sqlite ]; # Link against SQLite during the build.
         pythonImportsCheck = [ "pysqlite3" ];
       };
+      pysqlite3 =
+        let
+          basePysqlite3 = ps.pysqlite3 or null;
+          noOverride = basePysqlite3 != null;
+        in
+        lib.warnIf noOverride ''
+          nixpkgs provides pysqlite3 ${basePysqlite3.version}. Remove the local pysqlite3 package.
+        '' (
+          if noOverride then basePysqlite3 else localPysqlite3
+        );
       # Pin Tenacity to the version required by Sidekick.
       tenacity = ps.tenacity.overridePythonAttrs (_: rec {
         version = "8.5.0";
@@ -29,12 +39,26 @@ let
         };
       });
       # Add NumPy to the SQLite vector extension runtime dependencies.
-      sqlite-vec = ps."sqlite-vec".overridePythonAttrs (old: {
-        dependencies = (old.dependencies or [ ]) ++ [ ps.numpy ];
-        # ponytail: nixpkgs' check pulls OpenAI only for tests; drop this override when it no longer does.
-        doInstallCheck = false;
-        nativeCheckInputs = [ ];
-      });
+      # ponytail: Skip OpenAI-only checks until nixpkgs removes the OpenAI check input.
+      sqlite-vec = ps."sqlite-vec".overridePythonAttrs (
+        old:
+        let
+          hasNumPy = lib.any (dep: lib.getName dep == "numpy") (old.dependencies or [ ]);
+          hasOpenAICheck = lib.any (dep: lib.getName dep == "openai") (old.nativeCheckInputs or [ ]);
+          noOverride = hasNumPy && !hasOpenAICheck;
+        in
+        lib.warnIf noOverride ''
+          nixpkgs provides the required sqlite-vec dependencies. Remove the local sqlite-vec override.
+        '' (
+          lib.optionalAttrs (!hasNumPy) {
+            dependencies = (old.dependencies or [ ]) ++ [ ps.numpy ];
+          }
+          // lib.optionalAttrs hasOpenAICheck {
+            doInstallCheck = false;
+            nativeCheckInputs = [ ];
+          }
+        )
+      );
     in
     [
       ps.arrow # Columnar data structures and serialization.

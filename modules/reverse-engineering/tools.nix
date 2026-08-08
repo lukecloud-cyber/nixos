@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 let
-  # Package RetDec's upstream binary release because nixpkgs does not provide it.
+  # Package RetDec's upstream binary release because nixpkgs does not provide a working package.
   retdec-bin = pkgs.stdenv.mkDerivation {
     pname = "retdec-bin";
     version = "5.0";
@@ -79,13 +79,6 @@ let
     ];
   });
 
-  # Keep a Python 3.12 unblob variant ready; installation remains disabled below.
-  unblob = (pkgs.unblob.override { python3 = pkgs.python312; }).overridePythonAttrs (old: {
-    disabledTests = (old.disabledTests or [ ]) ++ [
-      "test_all_handlers[filesystem.btrfs_stream]"
-    ];
-  });
-
   # Pin the shared GhidraMCP source used by both the extension and Python bridge.
   ghidraMcpSrc = pkgs.fetchFromGitHub {
     owner = "LaurieWired";
@@ -148,15 +141,25 @@ let
   ghidraWithMcp = pkgs.ghidra.withExtensions (_: [ ghidraMcpExtension ]);
 
   # Avoid broken test-only dependency chains in current nixpkgs.
-  sseStarlette = pkgs.python312Packages.sse-starlette.overridePythonAttrs (old: {
-    doCheck = false;
-    nativeCheckInputs = [ ];
-    dependencies = (old.dependencies or [ ]) ++ [ pkgs.python312Packages.starlette ];
-  });
-  httpxSse = pkgs.python312Packages.httpx-sse.overridePythonAttrs (_: {
-    doCheck = false;
-    nativeCheckInputs = [ ];
-  });
+  sseStarlette = pkgs.python312Packages.sse-starlette.overridePythonAttrs (
+    old:
+    lib.warnIf (old.version != "3.2.0") ''
+      sse-starlette changed from 3.2.0 to ${old.version}. Test without the local override.
+    '' {
+      doCheck = false;
+      nativeCheckInputs = [ ];
+      dependencies = (old.dependencies or [ ]) ++ [ pkgs.python312Packages.starlette ];
+    }
+  );
+  httpxSse = pkgs.python312Packages.httpx-sse.overridePythonAttrs (
+    old:
+    lib.warnIf (old.version != "0.4.3") ''
+      httpx-sse changed from 0.4.3 to ${old.version}. Test without the local override.
+    '' {
+      doCheck = false;
+      nativeCheckInputs = [ ];
+    }
+  );
   # Build the MCP Python library version expected by the pinned Ghidra bridge.
   mcp = pkgs.python312Packages.buildPythonPackage {
     pname = "mcp";
@@ -268,7 +271,6 @@ in
 
     # Firmware and embedded targets
     binwalk # Identify and extract embedded files from firmware images.
-    # unblob # Modern firmware extractor; disabled due to its broken test chain.
     uefitool # Inspect and edit UEFI firmware images.
     uefi-firmware-parser # Parse UEFI firmware structures from Python.
 
