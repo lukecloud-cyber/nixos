@@ -9,6 +9,7 @@
     ../../modules/boot.nix
     ../../modules/nix-workflow.nix
     ../../modules/networking.nix
+    ../../modules/netwatch.nix
     ../../modules/ssh-server.nix
     ../../modules/regional-settings.nix
     ../../modules/DE/KDE-plasma.nix
