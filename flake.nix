@@ -79,5 +79,22 @@
             pkgs.libz
           ];
         };
+
+      # Provide tools for x86-64 NASM assembly, linking, debugging, and runtime analysis.
+      devShells.x86_64-linux.asm-lab =
+        let
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in
+        pkgs.mkShell {
+          packages = with pkgs; [
+            nasm
+            binutils
+            gcc
+            gnumake
+            gdb
+            valgrind
+            strace
+          ];
+        };
     };
 }
