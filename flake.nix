@@ -80,6 +80,29 @@
           ];
         };
 
+      # Provide the Rust toolchain, editor support, and common Cargo workflows.
+      devShells.x86_64-linux.rustlab =
+        let
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in
+        pkgs.mkShell {
+          packages = with pkgs; [
+            rustc # Rust compiler.
+            cargo # Build tool and package manager.
+            rust-analyzer # Language server for editor integration.
+            rustfmt # Standard formatter.
+            clippy # Standard linter.
+            cargo-edit # Add, remove, and upgrade dependencies from Cargo.
+            cargo-watch # Re-run commands when source files change.
+            cargo-audit # Check dependencies for known vulnerabilities.
+            cargo-nextest # Faster test runner.
+            pkg-config # Discover native libraries used by crates.
+            openssl # Common native TLS dependency.
+          ];
+
+          env.RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
+        };
+
       # Provide tools for x86-64 NASM assembly, linking, debugging, and runtime analysis.
       devShells.x86_64-linux.asm-lab =
         let

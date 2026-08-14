@@ -17,9 +17,13 @@
     };
   };
 
+  # Load the shared Rust development shell whenever this project is entered.
+  home-manager.users.sweet_cicero.home.file."Projects/rustlab/.envrc".text = ''
+    use flake /etc/nixos#rustlab
+  '';
+
   # Install command-line tools shared by development projects.
   environment.systemPackages = with pkgs; [
-    direnv # Load and unload per-directory shell environments.
     glab # GitLab command-line client.
     shellcheck # Static analyzer for shell scripts.
     yq-go # Query and edit YAML, JSON, XML, and related formats.
