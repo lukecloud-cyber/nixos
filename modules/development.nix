@@ -17,9 +17,9 @@
     };
   };
 
-  # Load the shared Rust development shell whenever this project is entered.
-  home-manager.users.sweet_cicero.home.file."Projects/rustlab/.envrc".text = ''
-    use flake /etc/nixos#rustlab
+  # Load the shared development shell in the Projects directory and its subdirectories.
+  home-manager.users.sweet_cicero.home.file."Projects/.envrc".text = ''
+    use flake /etc/nixos
   '';
 
   # Install command-line tools shared by development projects.

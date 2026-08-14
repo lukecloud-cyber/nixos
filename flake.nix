@@ -80,8 +80,8 @@
           ];
         };
 
-      # Provide the Rust toolchain, editor support, and common Cargo workflows.
-      devShells.x86_64-linux.rustlab =
+      # Provide the Rust and assembly tools for all projects.
+      devShells.x86_64-linux.default =
         let
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         in
@@ -98,18 +98,6 @@
             cargo-nextest # Faster test runner.
             pkg-config # Discover native libraries used by crates.
             openssl # Common native TLS dependency.
-          ];
-
-          env.RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
-        };
-
-      # Provide tools for x86-64 NASM assembly, linking, debugging, and runtime analysis.
-      devShells.x86_64-linux.asm-lab =
-        let
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        in
-        pkgs.mkShell {
-          packages = with pkgs; [
             nasm
             binutils
             gcc
@@ -118,6 +106,8 @@
             valgrind
             strace
           ];
+
+          env.RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
         };
     };
 }

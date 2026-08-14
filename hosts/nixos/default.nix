@@ -18,7 +18,6 @@
     ../../modules/cli-tools/yazi.nix
     ../../modules/cli-tools/ratty.nix
     ../../modules/development.nix
-    ../../devshell/asm-lab.nix
     ../../devshell/python-tutorial.nix
     ../../modules/browsers.nix
     ../../modules/communication.nix
