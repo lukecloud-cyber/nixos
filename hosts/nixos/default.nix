@@ -27,6 +27,7 @@
     ../../modules/gaming/moonlight.nix
     ../../modules/fonts.nix
     ../../modules/codex.nix
+    ../../modules/pentesting.nix
     ../../modules/reverse-engineering/ida-home.nix
     ../../modules/reverse-engineering/tools.nix
     ../../modules/reverse-engineering/binaryninja.nix
