@@ -79,6 +79,18 @@ let
     ];
   });
 
+  # Add Python 3.12.14 metadata to the xdis dependency.
+  uncompyle6 = pkgs.python312Packages.uncompyle6.override {
+    xdis = pkgs.python312Packages.xdis.overridePythonAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace xdis/magics.py \
+          --replace-fail \
+          '"3.12.11 3.12.12 3.12.13",' \
+          '"3.12.11 3.12.12 3.12.13 3.12.14",'
+      '';
+    });
+  };
+
   # Pin the shared GhidraMCP source used by both the extension and Python bridge.
   ghidraMcpSrc = pkgs.fetchFromGitHub {
     owner = "LaurieWired";
@@ -286,7 +298,7 @@ in
 
     # Managed code, Python bytecode, Go, and network/protocol analysis
     ilspycmd # Command-line decompiler for .NET assemblies.
-    python312Packages.uncompyle6 # Decompile Python bytecode to source.
+    uncompyle6 # Decompile Python bytecode to source.
     goresym # Recover symbols and metadata from stripped Go binaries.
     zeek # Analyze network traffic and emit structured security logs.
     mitmproxy # Interactive TLS-capable HTTP proxy for traffic inspection.
