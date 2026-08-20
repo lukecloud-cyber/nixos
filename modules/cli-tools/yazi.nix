@@ -5,11 +5,6 @@
   programs.yazi = {
     enable = true;
 
-    # Provide Glow through Yazi's private runtime path.
-    package = pkgs.yazi.override {
-      extraPackages = [ pkgs.glow ];
-    };
-
     plugins.piper = pkgs.yaziPlugins.piper;
 
     settings.yazi.plugin.prepend_previewers = [

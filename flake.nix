@@ -5,7 +5,10 @@
     # Rolling NixOS package and module collection.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # Prebuilt CachyOS kernels and their NixOS module.
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel/release";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # GPU-rendered terminal emulator and its NixOS module.
     ratty = {
       url = "github:orhun/ratty";
@@ -28,7 +31,10 @@
       inputs.flake-compat.follows = "nix-cachyos-kernel/flake-compat";
     };
     # Vendor hardware profiles used by the Dell laptop.
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

@@ -1,64 +1,28 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 let
   # Build the Python environment required by the Binary Ninja Sidekick plugin.
   sidekickPython = pkgs.python312.withPackages (
     ps:
     let
-      localPysqlite3 = ps.buildPythonPackage rec {
+      # Package the SQLite binding that Sidekick imports directly.
+      pysqlite3 = ps.buildPythonPackage rec {
         pname = "pysqlite3";
         version = "0.6.0";
         pyproject = true;
-
         src = pkgs.fetchPypi {
           inherit pname version;
           hash = "sha256-7PURK2Kk5sBEOJV+ND/pZycHvTGR94nsrmyVsiaqa7Y=";
         };
-
-        build-system = [ ps.setuptools ]; # Build the package with setuptools.
-        buildInputs = [ pkgs.sqlite ]; # Link against SQLite during the build.
+        build-system = [ ps.setuptools ];
+        buildInputs = [ pkgs.sqlite ];
         pythonImportsCheck = [ "pysqlite3" ];
       };
-      pysqlite3 =
-        let
-          basePysqlite3 = ps.pysqlite3 or null;
-          noOverride = basePysqlite3 != null;
-        in
-        lib.warnIf noOverride ''
-          nixpkgs provides pysqlite3 ${basePysqlite3.version}. Remove the local pysqlite3 package.
-        '' (
-          if noOverride then basePysqlite3 else localPysqlite3
-        );
-      # Pin Tenacity to the version required by Sidekick.
-      tenacity = ps.tenacity.overridePythonAttrs (_: rec {
-        version = "8.5.0";
-        src = pkgs.fetchPypi {
-          pname = "tenacity";
-          inherit version;
-          hash = "sha256-i8bAyKCbMebK0TxHr77RpWdRglCpoXFBhYLtjZwgyng=";
-        };
+      # Skip SQLite-vec checks that pull the broken OpenAI test chain.
+      sqliteVec = ps."sqlite-vec".overridePythonAttrs (old: {
+        dependencies = (old.dependencies or [ ]) ++ [ ps.numpy ];
+        doCheck = false;
       });
-      # Add NumPy to the SQLite vector extension runtime dependencies.
-      # ponytail: Skip OpenAI-only checks until nixpkgs removes the OpenAI check input.
-      sqlite-vec = ps."sqlite-vec".overridePythonAttrs (
-        old:
-        let
-          hasNumPy = lib.any (dep: lib.getName dep == "numpy") (old.dependencies or [ ]);
-          hasOpenAICheck = lib.any (dep: lib.getName dep == "openai") (old.nativeCheckInputs or [ ]);
-          noOverride = hasNumPy && !hasOpenAICheck;
-        in
-        lib.warnIf noOverride ''
-          nixpkgs provides the required sqlite-vec dependencies. Remove the local sqlite-vec override.
-        '' (
-          lib.optionalAttrs (!hasNumPy) {
-            dependencies = (old.dependencies or [ ]) ++ [ ps.numpy ];
-          }
-          // lib.optionalAttrs hasOpenAICheck {
-            doInstallCheck = false;
-            nativeCheckInputs = [ ];
-          }
-        )
-      );
     in
     [
       ps.arrow # Columnar data structures and serialization.
@@ -72,11 +36,11 @@ let
       ps.psutil # Read process and system information.
       ps.pydantic # Validate structured configuration and data.
       ps.pygments # Render syntax-highlighted source code.
-      pysqlite3 # SQLite bindings with the required package version.
+      pysqlite3 # SQLite binding required by Sidekick.
       ps.pyyaml # Parse YAML configuration and data.
       ps.requests # HTTP client used by Python integrations.
-      sqlite-vec # SQLite vector search extension.
-      tenacity # Retry failed operations with backoff.
+      sqliteVec # SQLite vector search extension.
+      ps.tenacity # Retry failed operations with backoff.
     ]
   );
 
