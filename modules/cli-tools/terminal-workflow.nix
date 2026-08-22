@@ -94,5 +94,6 @@
     e2fsprogs # Create and inspect ext2, ext3, and ext4 filesystems.
     p7zip # Create and extract 7z and related archives.
     herdr # Agent multiplexer
+    psmisc
   ];
 }
